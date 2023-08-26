@@ -119,7 +119,7 @@ function handleFormSubmit(formId) {
       request: formData.get("request") // For the first form, adjust this line if needed
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbw2adJ5syQguxZ0eXLGa6RITSaLs8HV0HL4eMOVtaji316VYcxMPFzneO8fiYD6MeSH/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbxwxc0apXAGbkToxiwc2eyfBq7wBe4waj_TZAba8zkdNNrpto3SQYB73032fYIxzrt_/exec", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
