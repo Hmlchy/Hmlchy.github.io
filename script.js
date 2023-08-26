@@ -9,7 +9,7 @@ window.addEventListener("scroll", function() {
 });
 
 
-//main chane
+//main sidebar nav
 const navLinks = document.querySelectorAll('.nav-link');
 const mainSections = document.querySelectorAll('main');
 
@@ -17,15 +17,23 @@ navLinks.forEach(link => {
   link.addEventListener('click', function() {
     const targetSection = this.getAttribute('data-target');
 
+    navLinks.forEach(navLink => {
+      if (navLink === this) {
+        navLink.classList.add('selected'); // Add the selected class to the clicked link
+      } else {
+        navLink.classList.remove('selected'); // Remove the selected class from other links
+      }
+    });
+
     mainSections.forEach(section => {
       if (section.classList.contains(targetSection)) {
         section.style.display = 'block';
         setTimeout(() => {
           section.classList.add('main-slide-in');
-          section.classList.remove('main-slide-out'); // Remove slide-out class
+          section.classList.remove('main-slide-out');
         }, 0);
       } else {
-        section.classList.remove('main-slide-in'); // Remove slide-in class
+        section.classList.remove('main-slide-in');
         section.classList.add('main-slide-out');
         setTimeout(() => {
           section.style.display = 'none';
@@ -35,6 +43,7 @@ navLinks.forEach(link => {
     });
   });
 });
+
 
 //automation preview 
 const link = document.querySelector('.link');
@@ -93,40 +102,69 @@ typeText(); // Start the typing effect
 
 
 //form response main
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("myForm");
 
-  form.addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent the default form submission behavior
 
-    // Get form data
+
+//form submission contact form
+function handleFormSubmit(formId) {
+  const form = document.getElementById(formId);
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
     const formData = new FormData(form);
+    const payload = {
+      formId: form.id,
+      email: formData.get("email"),
+      name: formData.get("name"),
+      request: formData.get("request") // For the first form, adjust this line if needed
+    };
 
-    // Convert form data to JSON object
-    const formDataObject = {};
-    formData.forEach((value, key) => {
-      formDataObject[key] = value;
-    });
-
-    // Send data to the specified URL using Fetch API
-    fetch("https://webhook.site/d1685e92-8e71-4bd8-9674-faee36ee506b", {
+    fetch("https://script.google.com/macros/s/AKfycbw2adJ5syQguxZ0eXLGa6RITSaLs8HV0HL4eMOVtaji316VYcxMPFzneO8fiYD6MeSH/exec", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS"
       },
-      body: JSON.stringify(formDataObject)
+      body: JSON.stringify(payload)
     })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the response from the server if needed
-        console.log(data);
-      })
-      .catch(error => {
-        // Handle any errors that occurred during the fetch
-        console.error(error);
-      });
+    .then(response => response.json())
+    .then(data => {
+      console.log("Response from server:", data);
+      // You can add additional code here to handle the response
+    })
+    .catch(error => {
+      console.error("Error sending data:", error);
+      // You can add error handling code here
+    })
+    .finally(() => {
+      // Reset the form regardless of success or failure
+      form.reset();
+    });
+  });
+}
 
-    // Reset the form after submission
-    form.reset();
+// Call the function to handle both forms
+handleFormSubmit("CF-contactForm");
+handleFormSubmit("myForm");
+
+//progress bar animation
+const progressBars = document.querySelectorAll(".progress-bar");
+
+progressBars.forEach((progressBar) => {
+  let currentWidth = 0;
+  const targetWidth = parseInt(progressBar.getAttribute("end"));
+
+  const updateProgressBar = () => {
+    currentWidth++;
+    progressBar.style.width = currentWidth + "%";
+
+    if (currentWidth < targetWidth) {
+      requestAnimationFrame(updateProgressBar);
+    }
+  };
+
+  window.addEventListener("load", () => {
+    updateProgressBar();
   });
 });
